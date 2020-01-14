@@ -1,0 +1,6 @@
+.env
+package-lock.json
+node-modules/*
+node-modules
+.next/*
+.next
