@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:7.10
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+
+      - run: yarn install
+
+      - run:
+          shell: /bin/sh
+          command: |
+            latest_commit_mgs=$(git log -1 --pretty=%B | head -1)
+            deploy_details=$(echo $latest_commit_mgs | grep -Eo "\[(\w+-\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
+            app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
+            stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
+            echo APP:$app, STAGE:$stage
