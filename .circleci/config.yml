@@ -13,9 +13,16 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
 
-      - run: yarn install --ignore-engines
+      - run:
+          name: Install Dependencies
+          command: yarn install --ignore-engines
 
       - run:
+          name: Build Application
+          command: echo "Build application..."
+
+      - run:
+          name: Deploy Application
           shell: /bin/sh
           command: |
             latest_commit_msg=$(git log -1 --pretty=%B | head -1)
@@ -30,3 +37,6 @@ jobs:
             else
                 echo "Skip deploying, there are no deploy pattern in the latest commit msg..."
             fi
+      - run:
+          name: Run Tests
+          command: echo "Testing..."
