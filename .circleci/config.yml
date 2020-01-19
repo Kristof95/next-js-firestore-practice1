@@ -33,10 +33,15 @@ jobs:
             if [ ! -z "$app" ] && [ ! -z "$stage" ]
             then
                 echo APP:$app, STAGE:$stage
+                export APP=$APP
+                export STAGE=$STAGE
                 yarn deploy:$app:$stage
             else
                 echo "Skip deploying, there are no deploy pattern in the latest commit msg..."
             fi
+      - run:
+          name: Print Environment Variable
+          command: echo "APP:$APP, STAGE:$STAGE"
       - run:
           name: Run Tests
           command: echo "Testing..."
