@@ -18,8 +18,9 @@ jobs:
       - run:
           shell: /bin/sh
           command: |
-            latest_commit_mgs=$(git log -1 --pretty=%B | head -1)
-            deploy_details=$(echo $latest_commit_mgs | grep -Eo "\[(\w+-\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
+            latest_commit_msg=$(git log -1 --pretty=%B | head -1)
+            echo "Latest commit msg: $latest_commit_msg"
+            deploy_details=$(echo $latest_commit_msg | grep -Eo "\[(\w+-\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
             app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
             if [ ! -z "$app" ] || [ ! -z "$stage" ]
@@ -27,5 +28,5 @@ jobs:
                 echo APP:$app, STAGE:$stage
                 yarn deploy:$app:$stage
             else
-                echo "Skip deploying, there are no deploy patter in the latest commig msg..."
+                echo "Skip deploying, there are no deploy patter in the latest commit msg..."
             fi
