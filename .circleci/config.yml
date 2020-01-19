@@ -22,5 +22,10 @@ jobs:
             deploy_details=$(echo $latest_commit_mgs | grep -Eo "\[(\w+-\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
             app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
-            echo APP:$app, STAGE:$stage
-            yarn deploy:$app:$stage
+            if [ ! -z "$app" ] || [ ! -z "$stage" ]
+            then
+                echo APP:$app, STAGE:$stage
+                yarn deploy:$app:$stage
+            else
+                echo "Skip deploying, there are no deploy patter in the latest commig msg..."
+            fi
