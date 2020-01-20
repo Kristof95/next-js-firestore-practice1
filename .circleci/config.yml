@@ -16,9 +16,9 @@ jobs:
             deploy_details=$(echo $latest_commit_msg | grep -Eo "\[(\w+-\w+)|(\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
             app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
-            echo "export APP=$app" >> $BASH_ENV
-            echo "export STAGE=$stage" >> $BASH_ENV
-            node -v
+            export APP=$ap" >> $BASH_ENV
+            export STAGE=$stage >> $BASH_ENV
+            source $BASH_ENV
       - restore_cache:
           key: v1-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
