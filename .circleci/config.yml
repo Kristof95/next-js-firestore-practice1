@@ -7,7 +7,6 @@ jobs:
 
     steps:
       - checkout
-
       - run:
           name: Prepare Context
           shell: /bin/sh
@@ -20,15 +19,12 @@ jobs:
             echo "export APP=$app" >> $BASH_ENV
             echo "export STAGE=$stage" >> $BASH_ENV
             node -v
-
       - restore_cache:
           key: {{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
-
       - run:
           name: Install Dependencies
           command: |
             echo "Install $APP dependencies..."
-
       - save_cache:
           key: {{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
@@ -37,7 +33,6 @@ jobs:
           name: Build Application
           command: |
             echo "Build App:$APP..."
-
       - run:
           name: Deploy Application
           command: |
