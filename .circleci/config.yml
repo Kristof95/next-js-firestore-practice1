@@ -23,6 +23,7 @@ jobs:
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
             echo "export APP=$app" >> $BASH_ENV
             echo "export STAGE=$stage" >> $BASH_ENV
+            node -v
 
       - run:
           name: Install Dependencies
