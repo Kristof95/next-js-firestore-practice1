@@ -34,7 +34,7 @@ jobs:
           name: Build Application
           command: |
             echo "Build App:$APP..."
-            yarn $APP:build
+      #           yarn $APP:build
 
       - run:
           name: Deploy Application
