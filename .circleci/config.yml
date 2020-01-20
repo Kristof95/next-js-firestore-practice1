@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:12.4.0-stretch
     working_directory: ~/repo
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            yarn install --ignore-engines
+#            yarn install --ignore-engines
             echo "Install $APP dependencies..."
 
       - run:
@@ -43,13 +43,10 @@ jobs:
             if [ ! -z ${STAGE} ]
             then
                 echo "APP:$APP, STAGE:$STAGE"
-                yarn deploy:$APP:$STAGE
+#                yarn deploy:$APP:$STAGE
             else
                 echo "Skip deploying, there are no deploy pattern in the latest commit msg..."
             fi
-      - run:
-          name: Print Environment Variable
-          command: echo "APP:${APP}, STAGE:${STAGE}..."
       - run:
           name: Run Tests
           command: echo "Testing..."
