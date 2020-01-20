@@ -23,6 +23,7 @@ jobs:
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
             echo "export APP=$app" >> $BASH_ENV
             echo "export STAGE=$stage" >> $BASH_ENV
+            npm install react next react-dom
 
       - run:
           name: Install Dependencies
@@ -34,6 +35,7 @@ jobs:
           name: Build Application
           command: |
             echo "Build App:$APP..."
+            yarn $APP:build
 
       - run:
           name: Deploy Application
