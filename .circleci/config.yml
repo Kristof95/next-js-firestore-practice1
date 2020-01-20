@@ -52,4 +52,4 @@ jobs:
             fi
       - run:
           name: Run Tests
-          command: echo "Testing..."
+          command: echo "Testing...testing"
