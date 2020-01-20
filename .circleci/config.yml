@@ -20,13 +20,13 @@ jobs:
             echo "export STAGE=$stage" >> $BASH_ENV
             node -v
       - restore_cache:
-          key: v1-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: v1-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Install Dependencies
           command: |
             echo "Install $APP dependencies..."
       - save_cache:
-          key: v1-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: v1-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
