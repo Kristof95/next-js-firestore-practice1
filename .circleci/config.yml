@@ -9,7 +9,6 @@ jobs:
       - checkout
       - run:
           name: Prepare Context
-          shell: /bin/sh -eo pipefail
           command: |
             latest_commit_msg=$(git log -1 --pretty=%B | head -1)
             echo "Latest commit msg: $latest_commit_msg"
@@ -18,7 +17,7 @@ jobs:
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
             echo "export APP=$app" >> $BASH_ENV
             echo "export STAGE=$stage" >> $BASH_ENV
-            if [ -z ${APP} ]
+            if [ -z "$APP" ]
             then
                 echo "There is no application type in the latest commig msg:"
                 echo "Format: [appname] or [appname-stage] e.g: [web] for only build or [web-qa] for deploy."
@@ -26,13 +25,13 @@ jobs:
             fi
 
       - restore_cache:
-          key: v2-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package.json" }}
+          key: v1-unipie-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Install Dependencies
           command: |
             echo "Install $APP dependencies..."
       - save_cache:
-          key: v2-{{ .Environment.APP }}-{{ .Branch }}-{{ checksum "package.json" }}
+          key: v1-unipie-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
@@ -43,7 +42,7 @@ jobs:
           name: Deploy Application
           command: |
             echo "Deploy - $APP:$STAGE"
-            if [ ! -z ${STAGE} ]
+            if [ ! -z "$STAGE" ]
             then
                 echo "APP:$APP, STAGE:$STAGE"
             else
