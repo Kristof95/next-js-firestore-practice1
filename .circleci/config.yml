@@ -50,7 +50,7 @@ jobs:
             fi
       - run:
           name: Print Environment Variable
-          command: echo "APP:${APP}, STAGE:${STAGE}"
+          command: echo "APP:${APP}, STAGE:${STAGE}..."
       - run:
           name: Run Tests
           command: echo "Testing..."
