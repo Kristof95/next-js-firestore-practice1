@@ -14,7 +14,6 @@ jobs:
             - v1-dependencies-
       - run:
           name: Prepare Context
-          command:
           shell: /bin/sh
           command: |
             latest_commit_msg=$(git log -1 --pretty=%B | head -1)
