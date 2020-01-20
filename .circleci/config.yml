@@ -17,6 +17,7 @@ jobs:
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
             echo "export APP=$app" >> $BASH_ENV
             echo "export STAGE=$stage" >> $BASH_ENV
+            echo "$APP:$STAGE"
             if [ -z "$APP" ]
             then
                 echo "There is no application type in the latest commig msg:"
