@@ -41,7 +41,8 @@ jobs:
           name: Deploy Application
           shell: /bin/sh
           command: |
-            if [ ! -z "${STAGE}" ]
+            echo "Deploy - $APP:$STAGE"
+            if [[ ! -z "$STAGE" ]]
             then
                 echo "APP:$APP, STAGE:$STAGE"
                 yarn deploy:$APP:$STAGE
