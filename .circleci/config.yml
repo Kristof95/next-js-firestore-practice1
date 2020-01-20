@@ -16,7 +16,7 @@ jobs:
             deploy_details=$(echo $latest_commit_msg | grep -Eo "\[(\w+-\w+)|(\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
             app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
             stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
-            export APP=$ap" >> $BASH_ENV
+            export APP=$app >> $BASH_ENV
             export STAGE=$stage >> $BASH_ENV
             source $BASH_ENV
       - restore_cache:
