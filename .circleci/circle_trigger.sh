@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 # The root directory of packages.
 # Use `.` if your packages are located in root.
