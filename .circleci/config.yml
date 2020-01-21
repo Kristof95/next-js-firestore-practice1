@@ -1,56 +1,109 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+parameters:
+  # This parameter is used to trigger the main workflow
+  trigger:
+    type: boolean
+    default: true
+
+  # A parameter per package
+  api:
+    type: boolean
+    default: false
+  app:
+    type: boolean
+    default: false
+
+executors:
+  node:
     docker:
       - image: circleci/node:12.4.0-stretch
-    working_directory: ~/repo
 
+jobs:
+  trigger-workflows:
+    executor: node
     steps:
       - checkout
       - run:
-          name: Prepare Context
-          command: |
-            latest_commit_msg=$(git log -1 --pretty=%B | head -1)
-            echo "Latest commit msg: $latest_commit_msg"
-            deploy_details=$(echo $latest_commit_msg | grep -Eo "\[(\w+-\w+)|(\w+)\]" | sed 's/\[//g; s/\]//g' | xargs)
-            app=$(echo "$deploy_details" | awk -F'-' '{print $1}')
-            stage=$(echo "$deploy_details" | awk -F'-' '{print $2}')
-            echo "export APP=$app" >> $BASH_ENV
-            echo "export STAGE=$stage" >> $BASH_ENV
-            source $BASH_ENV
-            echo "$APP:$STAGE"
-            if [ -z "${APP}" ]
-            then
-                echo "There is no application type in the latest commig msg:"
-                echo "Format: [appname] or [appname-stage] e.g: [web] for only build or [web-qa] for deploy."
-                exit 1
-            fi
+          name: Trigger workflows
+          command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
 
-      - restore_cache:
-          key: v1-ooi-{{ .Branch }}-{{ checksum "package.json" }}
+  build:
+    parameters:
+      package_name:
+        type: string
+
+    executor: node
+    working_directory: ~/project/<< parameters.package_name >>
+
+    steps:
+      - checkout:
+          path: ~/project
+      # This step is added only to show that we are in the package directory
       - run:
-          name: Install Dependencies
+          name: Content
           command: |
-            echo "Install $APP dependencies..."
-      - save_cache:
-          key: v1-ooi-{{ .Branch }}-{{ checksum "package.json" }}
+            cat README.md
+            echo "<< parameters.package_name >> built." > build.txt
+      - run:
+          name: Build
+          command: echo "Build << parameters.package_name >> ..."
+      - persist_to_workspace:
+          root: ~/project
           paths:
-            - ./node_modules
+            - ./<< parameters.package_name >>
+
+  deploy:
+    parameters:
+      package_name:
+        type: string
+
+    executor: node
+    working_directory: ~/project/<< parameters.package_name >>
+
+    steps:
+      - attach_workspace:
+          at: ~/project
+      # This step is added to show that files are available from the build job.
       - run:
-          name: Build Application
-          command: |
-            echo "Build App:$APP..."
-            yarn $APP:build
-      - run:
-          name: Deploy Application
-          command: |
-            echo "Deploy - $APP:$STAGE"
-            if [ ! -z "${STAGE}" ]
-            then
-                echo "APP:$APP, STAGE:$STAGE"
-            else
-                echo "Skip deploying, there are no deploy pattern in the latest commit msg..."
-            fi
-      - run:
-          name: Run Tests
-          command: echo "Testing...testing"
+          name: Content to deploy
+          command: ls && cat build.txt
+      - deploy:
+          name: Deploy
+          command: echo "Deploying << parameters.package_name >> ..."
+
+workflows:
+  version: 2
+
+  # The main workflow responsible for triggering all other workflows
+  # in which changes are detected.
+  ci:
+    when: << pipeline.parameters.trigger >>
+    jobs:
+      - trigger-workflows
+
+  # Workflows defined for each package.
+
+  api:
+    when: << pipeline.parameters.api >>
+    jobs:
+      - build:
+          name: api-build
+          package_name: api
+      - deploy:
+          name: api-deploy
+          package_name: api
+          requires:
+            - api-build
+
+  app:
+    when: << pipeline.parameters.app >>
+    jobs:
+      - build:
+          name: app-build
+          package_name: app
+      - deploy:
+          name: app-deploy
+          package_name: app
+          requires:
+            - app-build
