@@ -23,7 +23,7 @@ if  [[ ${LAST_COMPLETED_BUILD_SHA} == "null" ]]; then
     | uniq)
 
   REMOTE_BRANCHES=$(git branch -r | sed 's/\s*origin\///' | tr '\n' ' ')
-  PARENT_BRANCH=master
+  PARENT_BRANCH=qa
   for BRANCH in ${TREE[@]}
   do
     BRANCH=${BRANCH#"origin/"}
