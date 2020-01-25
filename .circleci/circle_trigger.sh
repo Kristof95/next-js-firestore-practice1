@@ -45,7 +45,7 @@ fi
 
 if [[ ${LAST_COMPLETED_BUILD_SHA} == "null" ]]; then
   echo -e "\e[93mNo CI builds for branch ${PARENT_BRANCH}. Using master.\e[0m"
-  LAST_COMPLETED_BUILD_SHA=feature/new-branch
+  LAST_COMPLETED_BUILD_SHA=feature/asd-123
 fi
 
 ############################################
