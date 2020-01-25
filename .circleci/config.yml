@@ -12,7 +12,7 @@ parameters:
     type: boolean
     default: false
 
-  initialize:
+  init:
     type: boolean
     default: true
 
