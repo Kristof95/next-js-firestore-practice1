@@ -55,7 +55,7 @@ PACKAGES=$(ls ${ROOT} -l | grep ^d | awk '{print $9}')
 echo "Searching for changes since commit [${LAST_COMPLETED_BUILD_SHA:0:7}] ..."
 
 ## The CircleCI API parameters object
-PARAMETERS='"trigger":false, "initialize":false'
+PARAMETERS='"trigger":false, "init":false'
 COUNT=0
 for PACKAGE in ${PACKAGES[@]}
 do
